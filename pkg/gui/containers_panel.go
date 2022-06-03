@@ -1,10 +1,11 @@
 package gui
 
 import (
-	"encoding/json"
-	"fmt"
-	"strings"
-	"time"
+  "encoding/json"
+  "fmt"
+  "strconv"
+  "strings"
+  "time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/fatih/color"
@@ -13,6 +14,7 @@ import (
 	"github.com/jesseduffield/lazydocker/pkg/commands"
 	"github.com/jesseduffield/lazydocker/pkg/config"
 	"github.com/jesseduffield/lazydocker/pkg/utils"
+	"github.com/nleeper/goment"
 )
 
 // list panel functions
@@ -147,6 +149,42 @@ func (gui *Gui) renderContainerConfig(container *commands.Container) error {
 	output += utils.WithPadding("Name: ", padding) + container.Name + "\n"
 	output += utils.WithPadding("Image: ", padding) + container.Details.Config.Image + "\n"
 	output += utils.WithPadding("Command: ", padding) + strings.Join(append([]string{container.Details.Path}, container.Details.Args...), " ") + "\n"
+
+  created, err := goment.New(container.Details.Created)
+  if err != nil {
+    panic(err)
+  }
+
+  finishedAt := created
+  if (container.Details.State.FinishedAt != "0001-01-01T00:00:00Z") {
+    finishedAt, err = goment.New(container.Details.State.FinishedAt)
+    if err != nil {
+      panic(err)
+    }
+  }
+  timeInState := finishedAt.FromNow()
+
+  if (container.Details.State.Running == true || container.Details.State.Paused == true) {
+    timeInState = strings.Replace(timeInState, " ago", "", 1)
+  }
+
+  state := ""
+  if (container.Details.State.Running == true || container.Details.State.Paused == true) {
+    state = "up"
+  } else if (container.Details.State.Status == "exited") {
+    state = container.Details.State.Status + " (" + strconv.FormatInt(int64(container.Details.State.ExitCode), 10) + ")"
+  } else {
+    state = container.Details.State.Status
+  }
+
+  paused := ""
+  if (container.Details.State.Paused == true) {
+    paused = " (" +  container.Details.State.Status + ")"
+  }
+
+	output += utils.WithPadding("Created: ", padding) + created.FromNow() + "\n"
+	output += utils.WithPadding("Status: ", padding) + state + " " + timeInState + paused + "\n"
+
 	output += utils.WithPadding("Labels: ", padding) + utils.FormatMap(padding, container.Details.Config.Labels)
 	output += "\n"
 
