@@ -3,7 +3,6 @@ package gui
 import (
   "encoding/json"
   "fmt"
-  "strconv"
   "strings"
   "time"
 
@@ -166,24 +165,17 @@ func (gui *Gui) renderContainerConfig(container *commands.Container) error {
 
   if (container.Details.State.Running == true || container.Details.State.Paused == true) {
     timeInState = strings.Replace(timeInState, " ago", "", 1)
+    timeInState = "for " + timeInState
   }
 
-  state := ""
-  if (container.Details.State.Running == true || container.Details.State.Paused == true) {
-    state = "up"
-  } else if (container.Details.State.Status == "exited") {
-    state = container.Details.State.Status + " (" + strconv.FormatInt(int64(container.Details.State.ExitCode), 10) + ")"
-  } else {
-    state = container.Details.State.Status
-  }
+  substatus := container.GetDisplaySubstatus()
 
-  paused := ""
   if (container.Details.State.Paused == true) {
-    paused = " (" +  container.Details.State.Status + ")"
+    substatus += " running"
   }
 
 	output += utils.WithPadding("Created: ", padding) + created.FromNow() + "\n"
-	output += utils.WithPadding("Status: ", padding) + state + " " + timeInState + paused + "\n"
+	output += utils.WithPadding("Status: ", padding) + container.GetDisplayStatus() + substatus + " " + timeInState + "\n"
 
 	output += utils.WithPadding("Labels: ", padding) + utils.FormatMap(padding, container.Details.Config.Labels)
 	output += "\n"
