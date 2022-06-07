@@ -31,6 +31,7 @@ gui:
 logs:
   timestamps: false
   since: '60m'
+  tail: 'all'
 commandTemplates:
   dockerCompose: docker-compose
   restartService: '{{ .DockerCompose }} restart {{ .Service.Name }}'
