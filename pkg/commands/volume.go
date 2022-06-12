@@ -7,6 +7,7 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
+	"github.com/jesseduffield/lazydocker/pkg/utils"
 	"github.com/sirupsen/logrus"
 )
 
@@ -22,7 +23,7 @@ type Volume struct {
 
 // GetDisplayStrings returns the dispaly string of Container
 func (v *Volume) GetDisplayStrings(isFocused bool) []string {
-	return []string{v.Volume.Driver, v.Name}
+	return []string{utils.ToTimeAgo(utils.ToTimeAgoParams{Timestamp: v.Volume.CreatedAt}), v.Volume.Driver, v.Name}
 }
 
 // RefreshVolumes gets the volumes and stores them

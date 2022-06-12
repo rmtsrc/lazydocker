@@ -13,7 +13,6 @@ import (
 	"github.com/jesseduffield/lazydocker/pkg/commands"
 	"github.com/jesseduffield/lazydocker/pkg/config"
 	"github.com/jesseduffield/lazydocker/pkg/utils"
-	"github.com/nleeper/goment"
 )
 
 // list panel functions
@@ -149,32 +148,21 @@ func (gui *Gui) renderContainerConfig(container *commands.Container) error {
 	output += utils.WithPadding("Image: ", padding) + container.Details.Config.Image + "\n"
 	output += utils.WithPadding("Command: ", padding) + strings.Join(append([]string{container.Details.Path}, container.Details.Args...), " ") + "\n"
 
-  created, err := goment.New(container.Details.Created)
-  if err != nil {
-    panic(err)
-  }
+  created := utils.ToTimeAgo(utils.ToTimeAgoParams{Timestamp: container.Details.Created, LabelLength: "long", IncludeAgo: true})
+	output += utils.WithPadding("Created: ", padding) + created + " (" + utils.RFC3339ToRFC1123(container.Details.Created) + ")\n"
 
-  finishedAt := created
-  if (container.Details.State.FinishedAt != "0001-01-01T00:00:00Z") {
-    finishedAt, err = goment.New(container.Details.State.FinishedAt)
-    if err != nil {
-      panic(err)
-    }
-  }
-  timeInState := finishedAt.FromNow()
-
+  timeInState := container.GetTimeInState("long")
   if (container.Details.State.Running == true || container.Details.State.Paused == true) {
-    timeInState = strings.Replace(timeInState, " ago", "", 1)
     timeInState = "for " + timeInState
+  } else {
+    timeInState += " ago"
   }
 
   substatus := container.GetDisplaySubstatus()
-
   if (container.Details.State.Paused == true) {
     substatus += " running"
   }
 
-	output += utils.WithPadding("Created: ", padding) + created.FromNow() + "\n"
 	output += utils.WithPadding("Status: ", padding) + container.GetDisplayStatus() + substatus + " " + timeInState + "\n"
 
 	output += utils.WithPadding("Labels: ", padding) + utils.FormatMap(padding, container.Details.Config.Labels)

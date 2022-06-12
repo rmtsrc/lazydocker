@@ -149,11 +149,6 @@ github.com/mgutz/str
 ## explicit; go 1.13
 # github.com/morikuni/aec v0.0.0-20170113033406-39771216ff4c
 ## explicit
-# github.com/nleeper/goment v1.4.4
-## explicit; go 1.14
-github.com/nleeper/goment
-github.com/nleeper/goment/locales
-github.com/nleeper/goment/regexps
 # github.com/onsi/ginkgo v1.8.0
 ## explicit
 # github.com/onsi/gomega v1.5.0
@@ -186,9 +181,6 @@ github.com/spkg/bom
 # github.com/stretchr/testify v1.7.0
 ## explicit; go 1.13
 github.com/stretchr/testify/assert
-# github.com/tkuchiki/go-timezone v0.2.0
-## explicit
-github.com/tkuchiki/go-timezone
 # github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778
 ## explicit; go 1.15
 github.com/xo/terminfo

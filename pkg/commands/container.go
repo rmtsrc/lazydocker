@@ -51,7 +51,7 @@ type Container struct {
 func (c *Container) GetDisplayStrings(isFocused bool) []string {
 	image := strings.TrimPrefix(c.Container.Image, "sha256:")
 
-	return []string{c.GetDisplayStatus(), c.GetDisplaySubstatus(), c.Name, c.GetDisplayCPUPerc(), utils.ColoredString(image, color.FgMagenta)}
+	return []string{c.GetTimeInState("short"), c.GetDisplayStatus(), c.GetDisplaySubstatus(), c.Name, c.GetDisplayCPUPerc(), utils.ColoredString(image, color.FgMagenta)}
 }
 
 // GetDisplayStatus returns the colored status of the container
@@ -96,6 +96,21 @@ func (c *Container) getHealthStatus() string {
 		return utils.ColoredString(fmt.Sprintf("(%s)", healthStatus), healthStatusColor)
 	}
 	return ""
+}
+
+func (c *Container) GetTimeInState(LabelLength string) string {
+	if !c.DetailsLoaded() {
+		return ""
+	}
+
+  created := c.Details.Created
+
+  timeInState := created
+  if (c.Details.State.FinishedAt != "0001-01-01T00:00:00Z") {
+    timeInState = c.Details.State.FinishedAt
+  }
+
+  return utils.ToTimeAgo(utils.ToTimeAgoParams{Timestamp: timeInState, LabelLength: LabelLength})
 }
 
 // GetDisplayCPUPerc colors the cpu percentage based on how extreme it is

@@ -80,6 +80,7 @@ func (gui *Gui) renderVolumeConfig(mainView *gocui.View, volume *commands.Volume
 		output += utils.WithPadding("Name: ", padding) + volume.Name + "\n"
 		output += utils.WithPadding("Driver: ", padding) + volume.Volume.Driver + "\n"
 		output += utils.WithPadding("Scope: ", padding) + volume.Volume.Scope + "\n"
+		output += utils.WithPadding("Created: ", padding) + utils.RFC3339ToRFC1123(volume.Volume.CreatedAt) + "\n"
 		output += utils.WithPadding("Mountpoint: ", padding) + volume.Volume.Mountpoint + "\n"
 		output += utils.WithPadding("Labels: ", padding) + utils.FormatMap(padding, volume.Volume.Labels) + "\n"
 		output += utils.WithPadding("Options: ", padding) + utils.FormatMap(padding, volume.Volume.Options) + "\n"

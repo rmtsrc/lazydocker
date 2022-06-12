@@ -29,7 +29,7 @@ type Image struct {
 
 // GetDisplayStrings returns the display string of Image
 func (i *Image) GetDisplayStrings(isFocused bool) []string {
-	return []string{i.Name, i.Tag, utils.FormatDecimalBytes(int(i.Image.Size))}
+	return []string{utils.ToTimeAgo(utils.ToTimeAgoParams{UnixTimestamp: i.Image.Created}), i.Name, i.Tag, utils.FormatDecimalBytes(int(i.Image.Size))}
 }
 
 // Remove removes the image
