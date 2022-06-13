@@ -148,7 +148,7 @@ func (c *DockerCommand) RefreshImages() ([]*Image, error) {
 			return true
 		}
 
-		return ownImages[i].Name < ownImages[j].Name
+		return ownImages[i].Image.Created > ownImages[j].Image.Created
 	})
 
 	return ownImages, nil

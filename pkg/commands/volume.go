@@ -38,7 +38,7 @@ func (c *DockerCommand) RefreshVolumes() error {
 	ownVolumes := make([]*Volume, len(volumes))
 
 	sort.Slice(volumes, func(i, j int) bool {
-		return volumes[i].Name < volumes[j].Name
+		return volumes[i].CreatedAt > volumes[j].CreatedAt
 	})
 
 	for i, volume := range volumes {

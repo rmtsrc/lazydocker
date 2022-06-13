@@ -213,7 +213,7 @@ func (c *DockerCommand) RefreshContainersAndServices() error {
 			return false
 		}
 
-		return services[i].Name < services[j].Name
+		return services[i].Container.Details.Created > services[j].Container.Details.Created
 	})
 
 	c.Containers = containers
@@ -264,7 +264,7 @@ func (c *DockerCommand) sortedContainers(containers []*Container) []*Container {
 			stateLeft := states[containers[i].Container.State]
 			stateRight := states[containers[j].Container.State]
 			if stateLeft == stateRight {
-				return containers[i].Name < containers[j].Name
+				return containers[i].Container.Created > containers[j].Container.Created
 			}
 			return states[containers[i].Container.State] < states[containers[j].Container.State]
 		})
